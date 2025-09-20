@@ -68,6 +68,9 @@ int client_receive_message(int socket, char *buffer, int buffer_size) {
     if (bytes_received < 0) {
         perror("接收訊息失敗");
         return -1;
+    } else if (bytes_received == 0) {
+        printf("伺服器已關閉連線\n");
+        return 0;  // 連線正常結束，不是錯誤
     }
 
     // 確保字串結尾
@@ -106,8 +109,12 @@ void client_run(int socket) {
         }
 
         // 接收伺服器回應
-        if (client_receive_message(socket, response_buffer, sizeof(response_buffer)) < 0) {
+        int recv_result = client_receive_message(socket, response_buffer, sizeof(response_buffer));
+        if (recv_result < 0) {
             printf("接收回應失敗\n");
+            break;
+        } else if (recv_result == 0) {
+            // 伺服器關閉連線，已在函數內顯示訊息
             break;
         }
 
