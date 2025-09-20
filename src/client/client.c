@@ -12,6 +12,16 @@ int client_connect(const char *server_ip, int port) {
     int client_socket;
     struct sockaddr_in server_addr;
 
+    // 參數驗證
+    if (server_ip == NULL) {
+        printf("錯誤: IP地址不能為空\n");
+        return -1;
+    }
+    if (port <= 0 || port > 65535) {
+        printf("錯誤: Port必須在1-65535範圍內，目前為: %d\n", port);
+        return -1;
+    }
+
     // 建立TCP socket
     client_socket = socket(AF_INET, SOCK_STREAM, 0);
     if (client_socket < 0) {
